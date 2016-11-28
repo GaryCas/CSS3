@@ -4,6 +4,8 @@ import org.jcsp.lang.Any2OneChannel;
 import org.jcsp.lang.CSProcess;
 import org.jcsp.lang.ChannelInput;
 import org.jcsp.util.Buffer;
+import processes.carpark.Arrives;
+import processes.carpark.Departs;
 
 /**
  * Created by rd019985 on 28/11/2016.
@@ -14,6 +16,7 @@ public class Control implements CSProcess {
     private Arrives arrives;
     private Departs departs;
     public static Buffer spaces;
+    public static Buffer onlineTickets;
     int i = 0;
 
     private ChannelInput input;
@@ -43,8 +46,9 @@ public class Control implements CSProcess {
         }
     }
 
+
     private void doArrive() {
-        if (spaces.getState() == 2){
+        if (isFull()){
             System.out.println("Sorry, the car park is full");
         } else{
             arrivesChannel.out().write(i++);
@@ -52,12 +56,26 @@ public class Control implements CSProcess {
     }
 
     private void doDepart() {
-        if (spaces.getState() == 0){
+        if (isEmpty()){
             System.out.println("There are no cars, m8");
         } else{
             departChannel.out().write(i--);
 
         }
+    }
+
+    public static boolean isFull(){
+        if (spaces.getState() == 2){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isEmpty(){
+        if (spaces.getState() == 0){
+            return true;
+        }
+        return false;
     }
 
     public void initCarpark(int cap){

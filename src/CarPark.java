@@ -5,12 +5,12 @@ import java.awt.event.WindowEvent;
 import org.jcsp.lang.*;
 import org.jcsp.util.*;
 import org.jcsp.awt.*;
-import processes.Arrives;
+import processes.carpark.Arrives;
 import processes.Control;
-import processes.Departs;
+import processes.carpark.Departs;
 
 
-class Main {
+class CarPark {
 
     public static void main (String argv[]) {
 
