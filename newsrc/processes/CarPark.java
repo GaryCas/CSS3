@@ -14,15 +14,9 @@ import java.awt.event.WindowEvent;
 /**
  * Created by rd019985 on 07/12/2016.
  */
-public class CarPark  {
+public class CarPark implements CSProcess {
 
-    private AltingChannelInput in;
-
-    public CarPark(AltingChannelInput in){
-        this.in = in;
-    }
-
-    public static void main (String[] args) {
+    public void run () {
         One2OneChannel arrive = Channel.one2one();
         One2OneChannel depart = Channel.one2one();
         Parallel CarPark;
@@ -32,6 +26,11 @@ public class CarPark  {
         // adding the close function on the AWT event close
         root.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 root.dispose();
             }
         });

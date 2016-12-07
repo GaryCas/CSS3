@@ -13,9 +13,9 @@ import java.awt.event.WindowEvent;
 /**
  * Created by rd019985 on 07/12/2016.
  */
-public class OnlineBooking {
+public class OnlineBooking implements CSProcess {
 
-    public static void main (String[] args) {
+    public void run () {
         One2OneChannel booking = Channel.one2one();
 
         final Frame root = new Frame("Online Booking System");
@@ -23,10 +23,14 @@ public class OnlineBooking {
         // adding the close function on the AWT event close
         root.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 root.dispose();
             }
         });
-
         VacancyService.initCarpark(10);
         final String[] label = {"book", "cancel booking"};
 

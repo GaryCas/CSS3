@@ -25,7 +25,7 @@ public class Main {
         });
 
         VacancyService.initCarpark(10);
-        final String[] label = {"new customer"};
+        final String[] label = {"CarPark", "MailTool", "OnlineBooking"};
 
         final Any2OneChannel event = Channel.any2one();
 
@@ -47,7 +47,7 @@ public class Main {
         new Parallel(
                 new CSProcess[]{
                         new Parallel(button),
-                       // new processes.CarPark(event.in())
+                        new MainGUI(event.in())
                 }
         ).run();
     }

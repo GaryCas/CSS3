@@ -17,17 +17,26 @@ import java.awt.event.WindowEvent;
 /**
  * Created by rd019985 on 07/12/2016.
  */
-public class MailTool {
+public class MailTool implements CSProcess {
 
-    public static void main (String[] args) {
+
+
+    @Override
+    public void run() {
         One2OneChannel mailBag = Channel.one2one();
         One2OneChannel dispatch = Channel.one2one();
 
         final Frame root = new Frame("Mail Tool");
 
         // adding the close function on the AWT event close
+        // adding the close function on the AWT event close
         root.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 root.dispose();
             }
         });
@@ -63,6 +72,5 @@ public class MailTool {
 
 
         MailTool.run();
-
     }
 }
