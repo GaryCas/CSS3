@@ -1,14 +1,8 @@
 package processes;
 
-import org.jcsp.awt.ActiveButton;
 import org.jcsp.lang.*;
 import processes.bookings.Booking;
-import processes.bookings.BookingGUI;
-import services.VacancyService;
-
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import processes.bookings.BookingComm;
 
 /**
  * Created by rd019985 on 07/12/2016.
@@ -28,14 +22,14 @@ public class OnlineBooking implements CSProcess {
         final Parallel OnlineBooking = new Parallel(
                 new CSProcess[]{
                         new Booking(booking.in()),
-                        new BookingGUI(event.in(), booking)
+                        new BookingComm(event.in(), booking)
                 });
 
         new Thread(){
             public void run(){
                 OnlineBooking.run();
             }
-        }.run();
+        }.start();
 
     }
 }

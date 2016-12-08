@@ -23,7 +23,7 @@ public class CarPark implements CSProcess {
         One2OneChannel depart = Channel.one2one();
 
 
-        final Parallel CarPark = new Parallel(
+        final Parallel carParkParallel = new Parallel(
                 new CSProcess[]{
                         new Arrivals(arrive.in()),
                         new Control(arrive, depart, this.event),
@@ -32,7 +32,7 @@ public class CarPark implements CSProcess {
         );
         new Thread() {
             public void run() {
-                CarPark.run();
+                carParkParallel.run();
             }
         }.start();
     }

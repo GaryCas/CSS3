@@ -51,12 +51,16 @@ public class BookingsGUI implements CSProcess{
 
         root.setVisible(true);
 
-        Parallel bookingsGUI = new Parallel(
+        final Parallel bookingsGUI = new Parallel(
                 new CSProcess[]{
                         new Parallel(button),
                         new OnlineBooking(event)
                 });
 
-        bookingsGUI.run();
+        new Thread() {
+            public void run() {
+                bookingsGUI.run();
+            }
+        }.start();
     }
 }

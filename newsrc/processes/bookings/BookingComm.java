@@ -9,11 +9,11 @@ import services.VacancyService;
 /**
  * Created by rd019985 on 07/12/2016.
  */
-public class BookingGUI implements CSProcess {
+public class BookingComm implements CSProcess {
     private final AltingChannelInput in;
     private final One2OneChannel booking;
 
-    public BookingGUI(AltingChannelInput in, One2OneChannel booking) {
+    public BookingComm(AltingChannelInput in, One2OneChannel booking) {
         this.in = in;
         this.booking = booking;
     }

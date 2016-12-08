@@ -59,7 +59,12 @@ public class MailToolGUI implements CSProcess {
                 }
             });
 
-            mailToolGUI.run();
+            new Thread(){
+                public void run(){
+                    mailToolGUI.run();
+                }
+            }.start();
+
         }
     }
 
