@@ -23,8 +23,6 @@ public class UINT implements CSProcess{
 
     @Override
     public void run() {
-        VacancyService.customers.put(new Customer());
-
         while (true) {
             String value = String.valueOf(in.read());
 

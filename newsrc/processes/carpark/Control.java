@@ -16,7 +16,6 @@ public class Control implements CSProcess{
     private final One2OneChannel depart;
     private AltingChannelInput in;
     private int i;
-    Customer customer = new Customer();;
 
     public Control(One2OneChannel arrive, One2OneChannel depart, AltingChannelInput in) {
         this.arrive = arrive;
@@ -35,6 +34,9 @@ public class Control implements CSProcess{
                 case "arrive":
                     doArrive();
                     break;
+                case "list bookings":
+                    doListBookings();
+                    break;
                 case "depart":
                     doDepart();
                     break;
@@ -45,11 +47,15 @@ public class Control implements CSProcess{
         }
     }
 
+    private void doListBookings() {
+        arrive.out().write("list bookings");
+    }
+
     private void doArrive() {
         if(VacancyService.isFull()){
             System.out.println("Car park is Full ");
         } else {
-            arrive.out().write(new Customer());
+            arrive.out().write("book");
         }
     }
 

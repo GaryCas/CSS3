@@ -1,14 +1,9 @@
 package guis;
 
 import org.jcsp.awt.ActiveButton;
-import org.jcsp.lang.Any2OneChannel;
-import org.jcsp.lang.CSProcess;
-import org.jcsp.lang.Channel;
-import org.jcsp.lang.Parallel;
+import org.jcsp.lang.*;
 import processes.CarPark;
-import services.VacancyService;
 
-import javax.naming.PartialResultException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -18,13 +13,18 @@ import java.awt.event.WindowEvent;
  */
 public class CarParkGUI implements CSProcess{
 
+    private Any2OneChannel carParkToBookingChannel;
+
+    public CarParkGUI(Any2OneChannel carParkToBookingChannel) {
+        this.carParkToBookingChannel = carParkToBookingChannel;
+    }
+
     public  void run(){
         final Frame root = new Frame("Car Park");
 
         final Parallel carParkGUI;
 
-
-        final String[] label = {"arrive", "book", "depart"};
+        final String[] label = {"arrive", "list bookings", "depart"};
 
         final Any2OneChannel event = Channel.any2one();
 
@@ -47,7 +47,7 @@ public class CarParkGUI implements CSProcess{
         carParkGUI = new Parallel(
                 new CSProcess[]{
                         new Parallel(button),
-                        new CarPark(event.in())
+                        new CarPark(event.in(), carParkToBookingChannel)
                 });
 
         // adding the close function on the AWT event close

@@ -38,10 +38,6 @@ public class Customer {
         this.status = status.NOT_STARTED;
     }
 
-    public void addTicket(int ticketHash){
-        TicketService.onlineTickets.put(new Object().hashCode());
-    }
-
     public void sendSuccessfulBookingEmail(int ticketHash){
         this.ticketHash = ticketHash;
         this.emails.add("BC: email " + emails.size() + " Subject: Booking reference " + ticketHash);

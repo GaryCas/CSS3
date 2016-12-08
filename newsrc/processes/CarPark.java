@@ -12,9 +12,11 @@ public class CarPark implements CSProcess {
 
 
     private AltingChannelInput event;
+    private Any2OneChannel carParkToBookingChannel;
 
-    public CarPark(AltingChannelInput in) {
+    public CarPark(AltingChannelInput in, Any2OneChannel carParkToBookingChannel) {
         this.event = in;
+        this.carParkToBookingChannel = carParkToBookingChannel;
     }
 
     public void run () {
@@ -25,9 +27,9 @@ public class CarPark implements CSProcess {
 
         final Parallel carParkParallel = new Parallel(
                 new CSProcess[]{
-                        new Arrivals(arrive.in()),
-                        new Control(arrive, depart, this.event),
-                        new Departs(depart.in())
+                        new Arrivals(arrive.in(), carParkToBookingChannel),
+                        new Control(arrive, depart, event),
+                        new Departs(depart.in(), carParkToBookingChannel)
                 }
         );
         new Thread() {

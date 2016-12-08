@@ -5,7 +5,6 @@ import entities.CustomerStatus;
 import org.jcsp.lang.AltingChannelInput;
 import org.jcsp.lang.CSProcess;
 import org.jcsp.lang.ChannelOutput;
-import org.jcsp.lang.One2AnyChannel;
 import services.TicketService;
 import services.VacancyService;
 
@@ -13,31 +12,42 @@ import services.VacancyService;
  * Created by rd019985 on 07/12/2016.
  */
 public class Booking implements CSProcess {
-    private final AltingChannelInput in;
     private final ChannelOutput bookingOut;
+    private AltingChannelInput bookingIn;
 
-    public Booking(AltingChannelInput in, ChannelOutput bookingOut) {
-        this.in = in;
+    public Booking(ChannelOutput bookingOut, AltingChannelInput bookingIn) {
+
         this.bookingOut = bookingOut;
+        this.bookingIn = bookingIn;
     }
 
     @Override
     public void run() {
         while (true){
-            String value = String.valueOf(in.read());
+            String valueFromArrivals = String.valueOf(bookingIn.read());
 
-            switch(value){
+            String[] value = valueFromArrivals.split(" ");
+
+            switch(value[0]){
                 case "book":
                     makeBooking();
                     break;
-                case "list bookings":
+                case "list":
                     listBookings();
+                    break;
+                case "depart":
+                    doDepart(value[1], value[2]);
                     break;
                 default:
                     System.out.println("no comprende");
                     break;
             }
+
         }
+    }
+
+    private void doDepart(String id, String hash) {
+        TicketService.remove(Integer.parseInt(hash));
     }
 
 

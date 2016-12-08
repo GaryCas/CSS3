@@ -32,7 +32,7 @@ public class TicketService {
         }
 
         for (Integer hc : hashcodesToKeep) {
-            System.out.println(hc + "\n");
+            System.out.println("Booking reference: " + hc);
             onlineTickets.put(hc);
         }
 

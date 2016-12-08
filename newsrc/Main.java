@@ -16,15 +16,15 @@ import java.awt.event.WindowEvent;
 public class Main {
     public static void main(String args[]) {
         One2AnyChannel bookingToEmailChannel = Channel.one2any();
-        One2OneChannel carParkToBookingChannel = Channel.one2one();
+        Any2OneChannel carParkToBookingChannel = Channel.any2one();
 
         VacancyService.initCarpark(10);
 
         new Parallel(
                 new CSProcess[]{
-                        new CarParkGUI(),
+                        new CarParkGUI(carParkToBookingChannel),
                         new MailToolGUI(bookingToEmailChannel),
-                        new BookingsGUI(bookingToEmailChannel)
+                        new BookingsGUI(bookingToEmailChannel, carParkToBookingChannel)
                 }
         ).run();
 

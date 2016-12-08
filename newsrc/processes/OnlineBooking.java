@@ -8,19 +8,19 @@ import processes.bookings.Booking;
  */
 public class OnlineBooking implements CSProcess {
 
-    private Any2OneChannel eventChannel;
-    private One2AnyChannel interProcessChannel;
+    private One2AnyChannel bookingToEmailChannel;
+    private Any2OneChannel carParkToBookingChannel;
 
-    public OnlineBooking(Any2OneChannel eventChannel, One2AnyChannel interProcessChannel) {
-        this.eventChannel = eventChannel;
-        this.interProcessChannel = interProcessChannel;
+    public OnlineBooking(One2AnyChannel bookingToEmailChannel, Any2OneChannel carParkToBookingChannel) {
+        this.bookingToEmailChannel = bookingToEmailChannel;
+        this.carParkToBookingChannel = carParkToBookingChannel;
     }
 
     public void run () {
 
         final Parallel OnlineBooking = new Parallel(
                 new CSProcess[]{
-                        new Booking(eventChannel.in(), interProcessChannel.out())
+                        new Booking(bookingToEmailChannel.out(), carParkToBookingChannel.in())
                 });
 
         new Thread(){
