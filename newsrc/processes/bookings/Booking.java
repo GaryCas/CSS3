@@ -3,6 +3,8 @@ package processes.bookings;
 import entities.Customer;
 import org.jcsp.lang.AltingChannelInput;
 import org.jcsp.lang.CSProcess;
+import org.jcsp.lang.ChannelOutput;
+import org.jcsp.lang.One2AnyChannel;
 import services.TicketService;
 import services.VacancyService;
 
@@ -10,17 +12,18 @@ import services.VacancyService;
  * Created by rd019985 on 07/12/2016.
  */
 public class Booking implements CSProcess {
-    private AltingChannelInput in;
+    private final AltingChannelInput in;
+    private final ChannelOutput bookingOut;
 
-    public Booking(AltingChannelInput in) {
+    public Booking(AltingChannelInput in, ChannelOutput bookingOut) {
         this.in = in;
+        this.bookingOut = bookingOut;
     }
 
     @Override
     public void run() {
-
-        while(true){
-            String value = String.valueOf(in.read()).toLowerCase();
+        while (true){
+            String value = String.valueOf(in.read());
 
             switch(value){
                 case "book":
@@ -36,6 +39,7 @@ public class Booking implements CSProcess {
         }
     }
 
+
     private void listBookings(){
         TicketService.printBookings();
     }
@@ -46,11 +50,12 @@ public class Booking implements CSProcess {
         } else {
             int hashcode = new Object().hashCode();
             Customer customer = new Customer();
-            customer.sendEmail(hashcode);
+
             System.out.println("Adding booking number " + hashcode);
             TicketService.onlineTickets.put(hashcode);
-
-
+            bookingOut.write("BC:" + customer.getId() + ": Booking confirmed ");
         }
     }
+
+
 }

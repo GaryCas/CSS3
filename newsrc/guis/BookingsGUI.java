@@ -2,9 +2,7 @@ package guis;
 
 import org.jcsp.awt.ActiveButton;
 import org.jcsp.lang.*;
-import processes.MailTool;
 import processes.OnlineBooking;
-import services.VacancyService;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -14,6 +12,12 @@ import java.awt.event.WindowEvent;
  * Created by rd019985 on 08/12/2016.
  */
 public class BookingsGUI implements CSProcess{
+
+    private One2AnyChannel channel;
+
+    public BookingsGUI(One2AnyChannel channel) {
+        this.channel = channel;
+    }
 
     @Override
     public void run() {
@@ -54,7 +58,7 @@ public class BookingsGUI implements CSProcess{
         final Parallel bookingsGUI = new Parallel(
                 new CSProcess[]{
                         new Parallel(button),
-                        new OnlineBooking(event)
+                        new OnlineBooking(event, channel)
                 });
 
         new Thread() {

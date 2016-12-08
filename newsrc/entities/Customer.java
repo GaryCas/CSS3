@@ -26,6 +26,11 @@ public class Customer {
         this.emailAddress = id + "@gmail.com";
     }
 
+    public Customer(String id) {
+        this.id = Integer.parseInt(id);
+        this.emailAddress = id + "@gmail.com";
+    }
+
     public void addTicket(int ticketHash){
         TicketService.onlineTickets.put(new Object().hashCode());
     }

@@ -2,12 +2,7 @@ package guis;
 
 import entities.Customer;
 import org.jcsp.awt.ActiveButton;
-import org.jcsp.lang.Any2OneChannel;
-import org.jcsp.lang.CSProcess;
-import org.jcsp.lang.Channel;
-import org.jcsp.lang.Parallel;
-import processes.CarPark;
-import processes.MailTool;
+import org.jcsp.lang.*;
 import services.VacancyService;
 
 import java.awt.*;
@@ -19,54 +14,88 @@ import java.util.ArrayList;
  * Created by rd019985 on 07/12/2016.
  */
 public class MailToolGUI implements CSProcess {
+    private One2AnyChannel bookingToEmailChannel;
+    private Frame root;
+
+    public MailToolGUI(One2AnyChannel bookingToEmailChannel) {
+        this.bookingToEmailChannel = bookingToEmailChannel;
+        root = new Frame("Choose Inbox");
+    }
+
     @Override
     public void run() {
-        final Frame root = new Frame("Choose Inbox");
 
+        initRoot();
+        doButtons();
+        startUpMailToolGUI();
+
+        while(true) {
+            String inputValue = String.valueOf(bookingToEmailChannel.in().read());
+
+            String[] inputComponents = inputValue.split(":");
+
+            switch (inputComponents[0]) {
+                case "BC":
+                    Customer customer = new Customer(inputComponents[1]);
+                    VacancyService.customers.put(customer);
+                    doButtons();
+                    break;
+                default:
+                    System.out.println("defaulting Mail Tool gui");
+                    break;
+            }
+        }
+    }
+
+    private void startUpMailToolGUI() {
+    }
+
+    private void doButtons() {
         final Parallel mailToolGUI;
+        final Any2OneChannel event = Channel.any2one();
+        ActiveButton [] buttons = new ActiveButton[10];
 
-        final String[] label = getLabels();
+        String[] label = getLabels();
 
         if(label != null) {
-
-            final Any2OneChannel event = Channel.any2one();
-
-            final ActiveButton[] button = new ActiveButton[label.length];
-
-            for (int i = 0; i < label.length; i++) {
-                button[i] = new ActiveButton(null, event.out(), label[i]);
-            }
-
-            root.setSize(300, 200);
             root.setLayout(new GridLayout(label.length / 2, 2));
 
-            for (int i = 0; i < label.length; i++) {
-                root.add(button[i]);
-            }
+            buttons[label.length - 1] = new ActiveButton(null, event.out(), label[label.length - 1]);
 
-            root.setVisible(true);
+            root.add(buttons[label.length - 1]);
 
             mailToolGUI = new Parallel(
                     new CSProcess[]{
-                            new Parallel(button),
-                            new InboxGUI(event)
+                            new Parallel(buttons),
+                            new InboxGUI(event, bookingToEmailChannel.in())
                     });
 
-            // adding the close function on the AWT event close
-            root.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent we) {
-                    root.dispose();
-                }
-            });
 
-            new Thread(){
-                public void run(){
+            new Thread() {
+                public void run() {
                     mailToolGUI.run();
                 }
             }.start();
 
+            root.setVisible(true);
         }
     }
+
+    private void initRoot() {
+        root.setSize(300, 200);
+
+
+        root.setVisible(true);
+
+        // adding the close function on the AWT event close
+        root.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                root.dispose();
+            }
+        });
+
+    }
+
 
     public String[] getLabels() {
         ArrayList<Customer> customerArrayList = VacancyService.getCustomerList();

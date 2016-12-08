@@ -2,18 +2,18 @@ package processes;
 
 import org.jcsp.lang.*;
 import processes.bookings.Booking;
-import processes.bookings.BookingComm;
 
 /**
  * Created by rd019985 on 07/12/2016.
  */
 public class OnlineBooking implements CSProcess {
 
-    private Any2OneChannel event;
+    private Any2OneChannel eventChannel;
+    private One2AnyChannel interProcessChannel;
 
-    public OnlineBooking(Any2OneChannel event) {
-
-        this.event = event;
+    public OnlineBooking(Any2OneChannel eventChannel, One2AnyChannel interProcessChannel) {
+        this.eventChannel = eventChannel;
+        this.interProcessChannel = interProcessChannel;
     }
 
     public void run () {
@@ -21,8 +21,7 @@ public class OnlineBooking implements CSProcess {
 
         final Parallel OnlineBooking = new Parallel(
                 new CSProcess[]{
-                        new Booking(booking.in()),
-                        new BookingComm(event.in(), booking)
+                        new Booking(eventChannel.in(), interProcessChannel.out())
                 });
 
         new Thread(){

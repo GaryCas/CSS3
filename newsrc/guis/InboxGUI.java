@@ -4,6 +4,8 @@ import entities.Customer;
 import org.jcsp.awt.ActiveButton;
 import org.jcsp.lang.Any2OneChannel;
 import org.jcsp.lang.CSProcess;
+import org.jcsp.lang.One2AnyChannel;
+import org.jcsp.lang.SharedChannelInput;
 import services.VacancyService;
 
 import java.awt.*;
@@ -16,16 +18,18 @@ import java.util.ArrayList;
  */
 public class InboxGUI implements CSProcess {
     private Any2OneChannel event;
+    private SharedChannelInput bookingToEmailChannel;
 
-    public InboxGUI(Any2OneChannel event) {
+    public InboxGUI(Any2OneChannel event, SharedChannelInput bookingToEmailChannel) {
         this.event = event;
+        this.bookingToEmailChannel = bookingToEmailChannel;
     }
 
     @Override
     public void run() {
         while(true){
-            String value = String.valueOf(event.in().read()).toLowerCase();
-            String[] values = value.split(" ");
+            String eventValue = String.valueOf(event.in().read()).toLowerCase();
+            String[] values = eventValue.split(" ");
 
             switch(values[0]){
                 case "customer":
@@ -34,6 +38,15 @@ public class InboxGUI implements CSProcess {
                     break;
                 default:
                     System.out.println("Not sure about that one");
+                    break;
+            }
+
+            String bookingChannelInput = String.valueOf(bookingToEmailChannel.read());
+            System.out.println("something");
+
+            switch(bookingChannelInput){
+                default:
+                    System.out.println("Inbox defaulting");
                     break;
             }
         }
@@ -78,32 +91,33 @@ public class InboxGUI implements CSProcess {
 
         while(true) {
             ArrayList<String> emails = currentCustomer.getEmails();
-            if(emails.size() == 0){
-                System.out.println(currentCustomer.getId() + " has no emails");
-                root.dispose();
-                return;
-            } else{
-                System.out.println(emails.get(count));
-                String value = String.valueOf(event.in().read());
-                switch (value) {
-                    case "next":
-                        count++;
-                        break;
-                    case "prev":
+
+            String value = String.valueOf(event.in().read());
+            switch (value) {
+                case "next":
+                    count++;
+                    break;
+                case "prev":
+                    if(count > 1)
                         count--;
-                        break;
-                    case "delete":
-                        emails.remove(count);
-                        currentCustomer.setEmails(emails);
-                        break;
-                    default:
-                        System.out.println("value " + value);
-                        break;
+                    break;
+                case "delete":
+                    emails.remove(count);
+                    currentCustomer.setEmails(emails);
+                    break;
+                default:
+                    System.out.println("value " + value);
+                    break;
                 }
-            }
+
         }
     }
 
+    /**
+     * Gets the current customer from the Customer buffer in the vacancy service
+     * @param values
+     * @return current customer
+     */
     public Customer getCurrentCustomer(String[] values) {
         for (Customer customer : VacancyService.getCustomerList()) {
             if(values[1].equalsIgnoreCase(String.valueOf(customer.getId()))){
