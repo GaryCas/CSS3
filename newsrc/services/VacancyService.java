@@ -1,6 +1,9 @@
 package services;
 
+import entities.Customer;
 import org.jcsp.util.Buffer;
+
+import java.util.ArrayList;
 
 /**
  * Created by rd019985 on 28/11/2016.
@@ -8,6 +11,7 @@ import org.jcsp.util.Buffer;
 public class VacancyService {
 
     public static Buffer customers;
+    private static ArrayList<Customer> customerArrayList;
 
     public static void initCarpark(int cap){
         customers = new Buffer(cap -1);
@@ -25,6 +29,21 @@ public class VacancyService {
             return true;
         }
         return false;
+    }
+
+    // convience method used for the GUI
+    public static ArrayList<Customer> getCustomerList(){
+        customerArrayList = new ArrayList<>();
+        while(!isEmpty()){
+            customerArrayList.add((Customer) customers.get());
+
+        }
+
+        for (Customer customer : customerArrayList) {
+              customers.put(customer);
+        }
+
+        return customerArrayList;
     }
 
 

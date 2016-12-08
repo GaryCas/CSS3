@@ -30,6 +30,7 @@ public class Control implements CSProcess{
     public void run() {
 
         while (true) {
+
             switch (String.valueOf(in.read())) {
                 case "arrive":
                     doArrive();

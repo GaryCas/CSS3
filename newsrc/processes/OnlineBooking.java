@@ -15,51 +15,27 @@ import java.awt.event.WindowEvent;
  */
 public class OnlineBooking implements CSProcess {
 
+    private Any2OneChannel event;
+
+    public OnlineBooking(Any2OneChannel event) {
+
+        this.event = event;
+    }
+
     public void run () {
         One2OneChannel booking = Channel.one2one();
 
-        final Frame root = new Frame("Online Booking System");
-
-        // adding the close function on the AWT event close
-        root.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                root.dispose();
-            }
-        });
-        VacancyService.initCarpark(10);
-        final String[] label = {"book", "cancel booking"};
-
-        final Any2OneChannel event = Channel.any2one();
-
-        final ActiveButton[] button = new ActiveButton[label.length];
-
-        for (int i = 0; i < label.length; i++) {
-            button[i] = new ActiveButton(null, event.out(), label[i]);
-        }
-
-        root.setSize(300, 200);
-        root.setLayout(new GridLayout(label.length / 2, 2));
-
-        for (int i = 0; i < label.length; i++) {
-            root.add(button[i]);
-        }
-
-        root.setVisible(true);
-
-
-        Parallel MailTool = new Parallel(
+        final Parallel OnlineBooking = new Parallel(
                 new CSProcess[]{
-                        new Parallel(button),
                         new Booking(booking.in()),
                         new BookingGUI(event.in(), booking)
                 });
 
-        MailTool.run();
+        new Thread(){
+            public void run(){
+                OnlineBooking.run();
+            }
+        }.run();
 
     }
 }

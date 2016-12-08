@@ -1,12 +1,11 @@
+
+import guis.BookingsGUI;
+import guis.CarParkGUI;
+import guis.MailToolGUI;
+import javafx.event.EventDispatcher;
 import org.jcsp.lang.AltingChannelInput;
 import org.jcsp.lang.CSProcess;
-import org.jcsp.lang.Parallel;
-import processes.CarPark;
 import processes.MailTool;
-import processes.OnlineBooking;
-import threads.CarParkRunnable;
-import threads.MailToolRunnable;
-import threads.OnlineBookingRunnable;
 
 /**
  * Created by rd019985 on 07/12/2016.
@@ -23,25 +22,15 @@ public class MainGUI implements CSProcess {
         while(true){
             String value = String.valueOf(in.read());
 
-            Parallel mainGUI = new Parallel(
-                    new CSProcess[]{
-                        new CarPark(),
-                        new MailTool(),
-                        new OnlineBooking()
-                    }
-            );
-
-            mainGUI.run();
-
             switch(value){
                 case "CarPark":
-                    new CarParkRunnable().start();
+                    new CarParkGUI().run();
                     break;
                 case "MailTool":
-                    new MailToolRunnable().start();
+                    new MailToolGUI().run();
                     break;
                 case "OnlineBooking":
-                    new OnlineBookingRunnable().start();
+                    new BookingsGUI().run();
                     break;
                 default:
                     System.out.println("no comprende");

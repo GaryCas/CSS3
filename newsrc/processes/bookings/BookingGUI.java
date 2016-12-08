@@ -27,8 +27,8 @@ public class BookingGUI implements CSProcess {
                 case "book":
                     booking.out().write("book");
                     break;
-                case "cancel booking":
-                    booking.out().write("cancel booking");
+                case "list bookings":
+                    booking.out().write("list bookings");
                     break;
                 default:
                     System.out.println("no comprende");

@@ -12,26 +12,22 @@ import services.VacancyService;
 public class Booking implements CSProcess {
     private AltingChannelInput in;
 
-    // remove, for test
-    Customer customer;
-
     public Booking(AltingChannelInput in) {
         this.in = in;
     }
 
     @Override
     public void run() {
-        customer = new Customer();
-        int hashcode = new Object().hashCode();
+
         while(true){
-            String value = String.valueOf(in.read());
+            String value = String.valueOf(in.read()).toLowerCase();
 
             switch(value){
                 case "book":
-                    makeBooking(hashcode);
+                    makeBooking();
                     break;
-                case "cancel booking":
-                    cancelBooking(hashcode);
+                case "list bookings":
+                    listBookings();
                     break;
                 default:
                     System.out.println("no comprende");
@@ -40,27 +36,20 @@ public class Booking implements CSProcess {
         }
     }
 
-    private void cancelBooking(int hashcode) {
-        if(TicketService.onlineTickets.getState() == 0){
-            System.out.println("There are no bookings to remove");
-        } else{
-            // remove, for test
-            System.out.println("removing booking number " + hashcode + " " +TicketService.onlineTickets.getState());
-
-            TicketService.remove(hashcode);
-            System.out.println("removed booking number " + hashcode + " " +TicketService.onlineTickets.getState());
-
-        }
+    private void listBookings(){
+        TicketService.printBookings();
     }
 
-    private void makeBooking(int hashcode) {
+    private void makeBooking() {
         if(VacancyService.isFull()){
-            System.out.println("Sorry there is no vacancy ");
+            System.out.println("Sorry we are fully booked ");
         } else {
+            int hashcode = new Object().hashCode();
+            Customer customer = new Customer();
+            customer.sendEmail(hashcode);
             System.out.println("Adding booking number " + hashcode);
             TicketService.onlineTickets.put(hashcode);
-            System.out.println(TicketService.onlineTickets.getState());
-            //EmailService.sendEmail(Customer)
+
 
         }
     }

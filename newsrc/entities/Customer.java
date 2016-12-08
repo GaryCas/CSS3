@@ -11,16 +11,19 @@ import java.util.Random;
 public class Customer {
 
     private int id;
+    private String emailAddress;
     private int ticketHash;
-    private ArrayList<String> emails;
+    private ArrayList<String> emails = new ArrayList<>();
 
     public Customer(int id, int ticketHash){
         this.id = id;
         this.ticketHash = ticketHash;
+        this.emailAddress = id + "@gmail.com";
     }
 
     public Customer() {
         this.id = Math.abs(new Random().nextInt());
+        this.emailAddress = id + "@gmail.com";
     }
 
     public void addTicket(int ticketHash){
@@ -29,6 +32,7 @@ public class Customer {
 
     public void sendEmail(int ticketHash){
         this.ticketHash = ticketHash;
+        this.emails.add("email " + emails.size() + " Subject: Booking reference " + ticketHash);
     }
 
     public int getId() {

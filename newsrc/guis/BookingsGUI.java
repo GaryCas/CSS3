@@ -1,10 +1,9 @@
-package processes;
+package guis;
 
 import org.jcsp.awt.ActiveButton;
 import org.jcsp.lang.*;
-import processes.email.Dispatch;
-import processes.email.MailBag;
-import processes.email.UINT;
+import processes.MailTool;
+import processes.OnlineBooking;
 import services.VacancyService;
 
 import java.awt.*;
@@ -12,26 +11,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Created by rd019985 on 07/12/2016.
+ * Created by rd019985 on 08/12/2016.
  */
-public class MailTool implements CSProcess {
-
-
-    private Any2OneChannel event;
-
-    public MailTool(Any2OneChannel event) {
-
-        this.event = event;
-    }
+public class BookingsGUI implements CSProcess{
 
     @Override
     public void run() {
-        One2OneChannel mailBag = Channel.one2one();
-        One2OneChannel dispatch = Channel.one2one();
+        One2OneChannel booking = Channel.one2one();
 
-        final Frame root = new Frame("Email Service");
+        final Frame root = new Frame("Online Booking System");
 
-        // adding the close function on the AWT event close
         // adding the close function on the AWT event close
         root.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -43,13 +32,14 @@ public class MailTool implements CSProcess {
                 root.dispose();
             }
         });
+        final String[] label = {"book", "list bookings"};
 
-        final String[] label = {"icon"};
+        final Any2OneChannel event = Channel.any2one();
 
         final ActiveButton[] button = new ActiveButton[label.length];
 
         for (int i = 0; i < label.length; i++) {
-            button[i] = new ActiveButton(null, this.event.out(), label[i]);
+            button[i] = new ActiveButton(null, event.out(), label[i]);
         }
 
         root.setSize(300, 200);
@@ -61,20 +51,12 @@ public class MailTool implements CSProcess {
 
         root.setVisible(true);
 
-
-        final Parallel MailTool = new Parallel(
+        Parallel bookingsGUI = new Parallel(
                 new CSProcess[]{
                         new Parallel(button),
-                        new Dispatch(dispatch.in()),
-                        new MailBag(mailBag.in()),
-                        new UINT(this.event.in(), dispatch, mailBag)
+                        new OnlineBooking(event)
                 });
 
-        new Thread() {
-            public void run() {
-                MailTool.run();
-            }
-        }.start();
-
+        bookingsGUI.run();
     }
 }

@@ -25,4 +25,16 @@ public class TicketService {
             onlineTickets.put(hc);
         }
     }
+
+    public static void printBookings(){
+        while(onlineTickets.getState() != 0){
+            hashcodesToKeep.add((Integer) onlineTickets.get());
+        }
+
+        for (Integer hc : hashcodesToKeep) {
+            System.out.println(hc + "\n");
+            onlineTickets.put(hc);
+        }
+
+    }
 }
