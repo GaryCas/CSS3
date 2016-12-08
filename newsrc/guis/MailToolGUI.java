@@ -1,6 +1,7 @@
 package guis;
 
 import entities.Customer;
+import entities.CustomerStatus;
 import org.jcsp.awt.ActiveButton;
 import org.jcsp.lang.*;
 import services.VacancyService;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+
+import static entities.CustomerStatus.BOOKED;
 
 /**
  * Created by rd019985 on 07/12/2016.
@@ -30,20 +33,21 @@ public class MailToolGUI implements CSProcess {
         startUpMailToolGUI();
 
         while(true) {
-            String inputValue = String.valueOf(bookingToEmailChannel.in().read());
+            Customer customer = (Customer) bookingToEmailChannel.in().read();
 
-            String[] inputComponents = inputValue.split(":");
-
-            switch (inputComponents[0]) {
-                case "BC":
-                    Customer customer = new Customer(inputComponents[1]);
-                    VacancyService.customers.put(customer);
+            switch (customer.getStatus()){
+                case BOOKED:
+                    customer.sendSuccessfulBookingEmail(customer.getTicketHash());
                     doButtons();
                     break;
+                case BOOKINGFAILED:
+                    customer.sendFailedBookingEmail(customer.getTicketHash());
+                    break;
                 default:
-                    System.out.println("defaulting Mail Tool gui");
+                    System.out.println("there is no action set for an email of that format");
                     break;
             }
+
         }
     }
 
@@ -83,8 +87,6 @@ public class MailToolGUI implements CSProcess {
 
     private void initRoot() {
         root.setSize(300, 200);
-
-
         root.setVisible(true);
 
         // adding the close function on the AWT event close

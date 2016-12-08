@@ -53,19 +53,11 @@ public class InboxGUI implements CSProcess {
     }
 
     private void launchGUI(Customer currentCustomer) {
-        System.out.println("loading inbox for " + currentCustomer.getId());
-
         final Frame root = new Frame(currentCustomer.getId() + " Email Service");
 
         // adding the close function on the AWT event close
-        // adding the close function on the AWT event close
         root.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 root.dispose();
             }
         });
@@ -95,10 +87,11 @@ public class InboxGUI implements CSProcess {
             String value = String.valueOf(event.in().read());
             switch (value) {
                 case "next":
-                    count++;
+                    if(emails.size() < count + 1)
+                        count++;
                     break;
                 case "prev":
-                    if(count > 1)
+                    if(count >= 1)
                         count--;
                     break;
                 case "delete":
@@ -109,6 +102,9 @@ public class InboxGUI implements CSProcess {
                     System.out.println("value " + value);
                     break;
                 }
+
+                if(emails.size() != 0)
+                    System.out.println(emails.get(count));
 
         }
     }

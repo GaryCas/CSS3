@@ -17,7 +17,6 @@ public class OnlineBooking implements CSProcess {
     }
 
     public void run () {
-        One2OneChannel booking = Channel.one2one();
 
         final Parallel OnlineBooking = new Parallel(
                 new CSProcess[]{

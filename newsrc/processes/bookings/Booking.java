@@ -1,6 +1,7 @@
 package processes.bookings;
 
 import entities.Customer;
+import entities.CustomerStatus;
 import org.jcsp.lang.AltingChannelInput;
 import org.jcsp.lang.CSProcess;
 import org.jcsp.lang.ChannelOutput;
@@ -45,15 +46,21 @@ public class Booking implements CSProcess {
     }
 
     private void makeBooking() {
-        if(VacancyService.isFull()){
-            System.out.println("Sorry we are fully booked ");
-        } else {
-            int hashcode = new Object().hashCode();
-            Customer customer = new Customer();
+        int hashcode = new Object().hashCode();
+        Customer customer = new Customer();
+        customer.setTicketHash(hashcode);
 
-            System.out.println("Adding booking number " + hashcode);
+        if(VacancyService.isFull()){
+            System.out.println("Sorry we are fully booked " + customer.getId());
+            customer.setStatus(CustomerStatus.BOOKINGFAILED);
+            bookingOut.write(customer);
+        } else {
+            System.out.println("Booking successful for " + customer.getId());
+            customer.setStatus(CustomerStatus.BOOKED);
+
+            VacancyService.customers.put(customer);
             TicketService.onlineTickets.put(hashcode);
-            bookingOut.write("BC:" + customer.getId() + ": Booking confirmed ");
+            bookingOut.write(customer);
         }
     }
 
